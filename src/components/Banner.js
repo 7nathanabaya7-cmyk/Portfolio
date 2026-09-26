@@ -1,0 +1,64 @@
+import { useState, useEffect } from "react";
+import { Col, Container, Row } from "react-bootstrap";
+import { ArrowRightCircle } from "react-bootstrap-icons";
+import headerImg from "../assets/img/header-img.svg";
+
+export const Banner = () => {
+	const [loopNum, setLoopNum] = useState(0);
+	const [isDeleting, setIsDeleting] = useState(false);
+	const toRotate = [ "3rd Year SWE Student", "Web Developer", "Future Software Engineer" ];
+	const [text, setText] = useState('');
+	const [delta, setDelta] = useState(300 - Math.random() * 100);
+	const period = 2000;
+
+	useEffect(() => {
+		let ticker = setInterval(() => {
+			tick();
+		}, delta)
+
+		return () => {clearInterval(ticker)};
+	}, [text])
+
+	const tick = () => {
+		let i = loopNum % toRotate.length;
+		let fullText = toRotate[i];
+		let updatedText = isDeleting ? fullText.substring(0, text.length - 1) : fullText.substring(0, text.length + 1);
+
+		setText(updatedText);
+
+		if (isDeleting) {
+			setDelta(prevDelta => prevDelta / 2)
+		}
+
+		if (!isDeleting && updatedText === fullText) {
+			setIsDeleting(true);
+			setDelta(period);
+		} else if (isDeleting && updatedText === '') {
+			setIsDeleting(false);	
+			setLoopNum(loopNum + 1);
+			setDelta(500);
+		}
+	}
+
+	return (
+		<section className="banner" id="home">
+			<Container>
+				<Row className="align-items-center">
+					<Col xs={12} md={6} xl={7}>
+						<span className="tagline">Welcome To My Portfolio</span>
+						<h1 className="hero-title">
+              Hi! I'm Nathan Abaya
+              <br/>
+              <span className="languages">{text}</span>
+            </h1>
+						<p>Hello! I'm Nathan Abaya, an aspiring software engineer with a strong interest in full stack applications, machine learning, and software development. I've been developing my skills in JavaScript, Java, and ReactJS (SQL and Git too if you wanna add those). My most recent works were on projects involving Java Swing where I made a 2d tile puzzle game and a full stack app with a working database that stores student logs using ReactJS and Java SpringBoot connected by a REST API. Well, some personal details of mine is I like sports, creative media (photography and video editing or wtv.), and games (been learning to code to make games but Ill get in to that industry later on). I wanted to pursue SWE because I wanted to contribute to society and build a technology that can make a difference to the world.</p>
+						<button type="button" onClick={() => window.open("https://www.linkedin.com/in/nathanabaya")}>Let's Connect <ArrowRightCircle size={25}/></button>
+					</Col>
+					<Col xs={12} md={6} xl={5}>
+							<img src={headerImg} alt="Header Img" />
+						</Col>
+				</Row>
+			</Container>
+		</section>
+	)
+}
